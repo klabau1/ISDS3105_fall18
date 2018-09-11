@@ -34,11 +34,19 @@ ggplot(data = freqCasualties, aes(x = class, y = n, fill = gender)) +
 #we want to plot the below chart using selfiesCasualties
 #1. Replicate the above using selfiesCasualties and geom_bar() instead of geom_col. You need to change the default stat  to 'identity'
 
+
+
 #ggplot( data = selfiesCasualties, aes()) +
 #  geom_bar()
 
 #2. Plot proportions instead of counts for both the previous charts
 
+```
+
+```{r}
+ggplot(data = selfiesCasualties) + geom_bar(aes(x = class, fill = gender))
+
+ggplot(data = selfiesCasualties) + geom_bar(aes(x = class, y =..prop.., fill = gender, position = 'dodge'))
 ```
 
 To plot a barchart for `selfiesCasualties`, you need to map y to the frequencies count of each `class` and `gender`. For dataset where **each row is an observation** (versus the count for each grouping level) you can use `geom_*(stat = 'count')`, which is the default for `geom_bar()`. To concude, you can view `geom_col` as a special instance of `geom_bar(... , stat='identity')`
@@ -68,6 +76,9 @@ Read the documentation for `?geom_bar` to see how you can map `y = ..propr..` in
 #' ggplot(data  = ..., aes(... , ...)) +
 #' geom_bar()
 ```
+```{r}
+ggplot(data = dt) + geom_bar(aes(x = College, y = ..prop.., fill = Sex, group = 1))
+```
 
 
 Add to the code for question 3 `group = Sex` and `position  = 'dodge'` to plot the distribution of genders across schools:
@@ -76,6 +87,9 @@ Add to the code for question 3 `group = Sex` and `position  = 'dodge'` to plot t
 
 #' switch between position = 'dodge' and position = 'fill' 
 #' to make sure your interpretation of the data is consistent
+```
+```{r}
+ggplot(data = dt) + geom_bar(aes(x = College, y = ..prop.., fill = Sex), position = fill)
 ```
 
 
@@ -90,11 +104,17 @@ Mapping too many variables on the same geom can make your chart hard to comprehe
 #  geom_bar() +       #plot a count of students in each college
 #  facet_wrap(~ Ethnicity)
 ```
+```{r}
+ggplot(data = dt) + geom_bar(aes(x = College, fill = Sex)) + facet_wrap(~Ethnicity, scales = 'free_y')
+```
 
 
 ```{r}
 #repeat the previous but facetting by College and mapping ethnicity to x
-# add: labs(title = "New plot title", subtitle = "A subtitle", caption = 'data from www.lsu.edu')
+# add:  "A subtitle", caption = 'data from www.lsu.edu')
+```
+```{r}
+ggplot(data = dt) + geom_bar(aes(x = Ethnicity, fill = Sex)) + facet_wrap(~College, scales = 'free_y') + labs(title = "New plot title", subtitle = "A subtitle", caption = 'data from www.lsu.edu')
 ```
 
 
@@ -104,12 +124,19 @@ You can change the defaults of certain attributes using `scale_attrName_*` funct
 To select colors, you can sue rgb, hex or [color names]((http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf)
 
 ```{r}
-#ggplot(data = dt) +
-#  geom_bar(aes(College, fill = Sex)) +
+ggplot(data = dt) +
+  geom_bar(aes(College, fill = Sex)) +
 #  scale_fill_manual(values  = replace this with a vector of colors)
 #  OR (ALTERNATIVELY) change the colors usig :     scale_fill_brewer(type = ..., palette = ...)
 # use theme(panel.background = element_blank()) to remove the background color
 # check the documentation for element_text() and use it within theme(axis.text.x = element_text()) to rotate the lables by 45 degrees
+```
+```{r}
+ggplot(data = dt) +
+    geom_bar(aes(College, fill = Sex)) +
+    scale_fill_brewer(type = , palette = )
+
+ggplot(data = dt) + geom_bar(aes(College, fill = Sex)) + scale_fill_brewer(palette = 'Reds', name = 'Gender')
 ```
 
 You might have noticed that ggplot2 uses default names for the scales of the mapped variables. You can change those defaults by changing the values in `scale_[aes]_[type]`:
@@ -122,6 +149,10 @@ You might have noticed that ggplot2 uses default names for the scales of the map
 #use the below function to change the legend title into "gender" the legend values into 'Male' and 'Female'
 #  scale_fill_discrete(name = ... , labels =  ... ) 
 #move the legend to the bottom. To find out how to do that, check the documentation for theme(legend.position)
+```
+```{r}
+ggplot(data = dt) + geom_bar(aes(College, fill = Sex)) + scale_fill_brewer(palette = 'Greens', name = 'Gender') + theme(axis.text.x = element_text(angle = 45, hjust = 1),
+                                                                                                                        panel.background = element_blank())
 ```
 
 
