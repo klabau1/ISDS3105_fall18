@@ -75,7 +75,7 @@ print("The are " + len + " Observations in the Big-Mac Index")
 
 ```{r}
 # Dropping 46th element
-
+rep[-46]
 ```
 
 
