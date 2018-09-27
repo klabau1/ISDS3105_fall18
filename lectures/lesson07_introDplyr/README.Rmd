@@ -309,7 +309,7 @@ if (!require(nycflights13)) install.packages('nycflights13')
 1. Use the appropriate join to add the full carrier names to `flights` using `airlines` :
 
 ```{r}
-
+left_join(airlines, flights)
 ```
 
 

@@ -16,6 +16,7 @@ library(tidyverse)
 #' this WON'T work off-campus unless you use a client server
 #' you need to add USN/PW to con.R
 #' DON'T push con.R to GitHub -- use .gitinore
+
 source(here::here('lectures/lesson08_notes_datamodel/conn.R'))
 dbListTables(con) # these are the entities in the DB
 dbListFields(con, 'review') # these are the attributes in the entity review
@@ -47,24 +48,70 @@ However, you want to `collect()` as late as possible to make sure you leverage t
 
 #. Report the distinct types of hotels
 
+```{r}
+#taking out the warnings
+options(warn = -1)
+tbl(con, 'review') %>%
+  distinct(hotelType)
+collect(q1)
+```
+
+
 #. Report the top 3 hotels with the highest number of rooms (keep only hotelId, hotelName, hotelRooms)
+
+```{r}
+table(con, 'hotel') %>%
+  select(hotelId, hotelName, hotelRooms) %>% 
+  arrange(hotelRooms) %>% collect() %>% 
+  slice(1:3)
+```
+
+
 
 #. Count the independent business (those who do not belong to any brand)
 
+```{r}
+table(con, 'hotel') %>% 
+  select(hotelId, hotelName, brandId) %>% 
+  filter(is.na(brandId)) %>% 
+  count()
+```
+
+
 #. Report the top 3 hotels with the best service (calculate the average using review.reviewService)
+
+```{r}
+table(con, 'hotel') %>% 
+  inner_join(table(con, 'review'), by = c('hotelId' = 'hotelId')) %>% 
+  group_by(hotelName) %>% 
+  summarise()
+```
+
 
 #. Report all the authors and the hotels they reviewed. Report the author name, the hotel ID and hotel name. Order the output by author name
 
 ```{r}
-
+table(con, 'hotel') %>% 
+  inner_join(table(con, 'review')) %>% 
+  inner_join(table(con, 'author')) %>% 
+  select(authorNickname, hotelName, hotelId) %>% 
+  arrange(desc(authorName))
 ```
 
 
 #. Report the total number of reviews received by each hotel. Report a three columns table with `hotelId`, `hotelName` and total number of reviews. Make sure that you are including hotels with zero reviews as well. Note that some hotels have 0 reviews. If you decide to count the rows in each grouping level, make sure you you don't count as 1 those who have zero reviews.
 
 ```{r}
-
+table(con, 'hotel') %>% 
+  left_jion(tabl(con, 'review')) %>% 
+  group_by(hotelId, hotelName) %>% 
+  summarise(tot - n()) %>% 
+  select(hotelName, tot)
+  
+  
 ```
+
+
 
 
 #. Report how many chains established their headquarter in each country. Plot a barchart those frequencies by country and then add a title to your plot. Adjust your axes' labels as needed (remember that non-data ink points are modified within `theme()`).
